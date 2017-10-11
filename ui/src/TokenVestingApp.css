@@ -1,0 +1,13 @@
+.TokenVestingApp {
+  text-align: center;
+}
+
+.header {
+  height: 100px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #222;
+
+  text-align: left;
+  color: white;
+}
