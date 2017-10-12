@@ -109,8 +109,17 @@ class TokenVestingApp extends Component {
     return (
       <div className="TokenVestingApp">
         <header className="header">
-          <img className="logo" src="/logo-zeppelin.png" alt="OpenZeppelin logo" />
-          <h3>Vesting address: { this.contractLink(this.props.address) }</h3>
+          <Grid>
+            <Col xs={12}>
+              <a target="_blank" href="https://openzeppelin.org">
+                <img className="logo hidden-xs hidden-sm" src="/logo-zeppelin.png" alt="OpenZeppelin logo" />
+              </a>
+              <div className="contracts">
+                <h3>Vesting address: { this.contractLink(this.props.address) }</h3>
+                <span>For token address: { this.contractLink(this.props.token) }</span>
+              </div>
+            </Col>
+          </Grid>
         </header>
         <Grid>
           <Row>

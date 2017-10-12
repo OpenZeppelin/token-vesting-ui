@@ -4,7 +4,6 @@
 }
 
 .header {
-  height: 100px;
   margin-bottom: 30px;
   padding: 20px;
   background-color: white;
@@ -14,21 +13,30 @@
   border-bottom: 1px solid #ecf0f2;
 }
 
-.header h3 {
-  display: inline-block;
-  margin: 0 10px;
-  padding: 0 15px;
-
-  border-left: 2px solid #5cb6e4;
-  font-size: 20px;
-  vertical-align: middle;
-  line-height: 50px;
+.logo {
+  position: relative;
+  left: -27px;
+  height: 50px;
+  padding-right: 14px;
+  border-right: 1px solid #5cb6e4;
 }
 
-.header a {
+.contracts {
+  display: inline-block;
+  height: 50px;
+  vertical-align: middle;
+}
+
+.contracts h3 {
+  font-size: 20px;
+  margin: 5px 0 0;
+}
+
+.contracts a {
   color: #004569;
 }
 
-.logo {
-  height: 50px;
+.contracts span {
+  color: #333;
+  font-size: 11px;
 }
