@@ -6,7 +6,7 @@ import Web3 from 'web3'
 const App = () => (
   <Router>
     <Switch>
-      <Route path="/:address" component={ Main }/>
+      <Route path="/:address/:token" component={ Main }/>
       <Route component={ MissingAddress } />
     </Switch>
   </Router>
@@ -14,10 +14,10 @@ const App = () => (
 
 const Main = function({ match }) {
   let web3 = new Web3()
-  let { address } = match.params
+  let { address, token } = match.params
 
   return web3.isAddress(address)
-    ? <TokenVestingApp address={ address } />
+    ? <TokenVestingApp address={ address } token={ token } />
     : <MissingAddress />
 }
 

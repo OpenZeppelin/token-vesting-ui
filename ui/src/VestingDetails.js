@@ -1,9 +1,15 @@
-import React, { Component } from 'react';
-import { Table } from 'react-bootstrap';
+import React, { Component } from 'react'
+import { Table } from 'react-bootstrap'
+import moment from 'moment'
 
 class VestingDetails extends Component {
+  format(date) {
+    let milliseconds = date * 1000
+    return moment(milliseconds).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  }
+
   render() {
-    let { start, end, cliff, total, vested, revocable } = this.props.details;
+    let { start, end, cliff, total, released, releasable, vested, revocable } = this.props.details
 
     return <div>
       <h4>Vesting details</h4>
@@ -11,23 +17,31 @@ class VestingDetails extends Component {
         <tbody>
           <tr>
             <th>Start date</th>
-            <td>{ start }</td>
-          </tr>
-          <tr>
-            <th>End date</th>
-            <td>{ end }</td>
+            <td>{ this.format(start) }</td>
           </tr>
           <tr>
             <th>Cliff</th>
-            <td>{ cliff }</td>
+            <td>{ this.format(cliff) }</td>
           </tr>
           <tr>
-            <th>Total amount</th>
-            <td>{ total }</td>
+            <th>End date</th>
+            <td>{ this.format(end) }</td>
           </tr>
           <tr>
             <th>Already vested</th>
             <td>{ vested }</td>
+          </tr>
+          <tr>
+            <th>Already released</th>
+            <td>{ released }</td>
+          </tr>
+          <tr>
+            <th>Releasable</th>
+            <td>{ releasable }</td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <td>{ total }</td>
           </tr>
           <tr>
             <th>Revocable</th>
@@ -39,4 +53,4 @@ class VestingDetails extends Component {
   }
 }
 
-export default VestingDetails;
+export default VestingDetails
