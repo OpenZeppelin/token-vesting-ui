@@ -36,21 +36,21 @@ class TokenVestingApp extends Component {
   }
 
   getTokenVesting(address) {
-    let { givenProvider } = this.state.web3
-    if (! givenProvider) return
+    let { currentProvider } = this.state.web3
+    if (! currentProvider) return
 
     let TokenVesting = contract(vesting_artifacts)
-    TokenVesting.setProvider(givenProvider)
+    TokenVesting.setProvider(currentProvider)
 
     return TokenVesting.at(address)
   }
 
   getTokenContract(address) {
-    let { givenProvider } = this.state.web3
-    if (! givenProvider) return
+    let { currentProvider } = this.state.web3
+    if (! currentProvider) return
 
     let Token = contract(token_artifacts)
-    Token.setProvider(givenProvider)
+    Token.setProvider(currentProvider)
 
     return Token.at(address)
   }
@@ -67,7 +67,7 @@ class TokenVestingApp extends Component {
       return
     }
 
-    let accounts = await this.state.web3.eth.getAccounts()
+    let { accounts } = this.state.web3.eth
     console.log(accounts)
 
     let start = await tokenVesting.start()
@@ -109,7 +109,7 @@ class TokenVestingApp extends Component {
     return (
       <div className="TokenVestingApp">
         <header className="header">
-          <img class="logo" src="/logo-zeppelin.png" />
+          <img className="logo" src="/logo-zeppelin.png" alt="OpenZeppelin logo" />
           <h3>Vesting address: { this.contractLink(this.props.address) }</h3>
         </header>
         <Grid>
