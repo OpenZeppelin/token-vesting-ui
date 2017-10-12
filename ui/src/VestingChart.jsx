@@ -4,17 +4,38 @@ import moment from 'moment'
 
 class VestingChart extends Component {
   render() {
-    let { start, cliff, end, total, vested } = this.props.details
-    let now = new Date / 1000
+    return <div>
+      <h4>Vesting schedule</h4>
+      <Line data={ this.chartData() } options={ this.chartOptions() } />
+    </div>
+  }
 
-    let options = {
+  chartData() {
+    let { start, cliff, end, total, vested } = this.props.details
+    let now = new Date() / 1000 // normalize to seconds
+
+    return {
+      datasets: [
+        this.fromBaseDataset({
+          data: [
+            { x: this.formatDate(start), y: 0 },
+            { x: this.formatDate(cliff), y: this.getCliffAmount() },
+            { x: this.formatDate(now), y: vested },
+            { x: this.formatDate(end), y: total },
+          ],
+        }),
+      ],
+    }
+  }
+
+  chartOptions() {
+    return {
       legend: { display: false },
       scales: {
         xAxes: [ {
           type: "time",
           time: {
             format: 'MM/DD/YYYY',
-            // round: 'day'
             tooltipFormat: 'll HH:mm'
           },
           scaleLabel: {
@@ -30,55 +51,36 @@ class VestingChart extends Component {
         }]
       },
     }
-
-    let data = {
-      datasets: [
-        this.fromBaseDataset({
-          data: [
-            { x: this.formatDate(start), y: 0 },
-            { x: this.formatDate(cliff), y: this.foo(total, start, cliff, end) },
-            { x: this.formatDate(now), y: vested },
-            { x: this.formatDate(end), y: total },
-          ],
-        }),
-      ],
-    }
-
-    return <div>
-      <h4>Vesting schedule</h4>
-      <Line data={ data } options={ options } />
-    </div>
   }
 
-  foo(total, start, cliff, end) {
-    let cli = cliff - start
-    let en = end - start
+  getCliffAmount() {
+    let { total, start, cliff, end } = this.props.details
+    let slope = (cliff - start) / (end - start)
 
-    return total * cli / en
-  }
-
-  formatDate(date) {
-    return moment(date * 1000).format('MM/DD/YYYY')
+    return total * slope
   }
 
   fromBaseDataset(opts) {
-    let base = {
+    return {
       lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
+      backgroundColor: 'rgba(92,182,228,0.4)',
+      borderColor: 'rgba(92,182,228,1)',
       borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: 'rgba(75,192,192,1)',
+      pointBorderColor: 'rgba(92,182,228,1)',
+      pointBackgroundColor: 'rgba(92,182,228,1)',
       pointBorderWidth: 1,
       pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBackgroundColor: 'rgba(92,182,228,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
       pointRadius: 5,
       pointHitRadius: 10,
+      ...opts
     }
+  }
 
-    return Object.assign(base, opts)
+  formatDate(date) {
+    return moment(date * 1000).format('MM/DD/YYYY')
   }
 }
 

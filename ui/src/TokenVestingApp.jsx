@@ -15,8 +15,12 @@ import token_artifacts from './SimpleToken.json'
 class TokenVestingApp extends Component {
   constructor() {
     super()
-    this.state = {
-      web3: new Web3(),
+    this.state = this.initialState()
+  }
+
+  initialState() {
+    return {
+      web3: this.getWeb3(),
       start: new Date() / 1000 - 1000000,
       cliff: new Date() / 1000 - 300000,
       end: new Date() / 1000 + 1000000,
@@ -63,6 +67,9 @@ class TokenVestingApp extends Component {
       return
     }
 
+    let accounts = await this.state.web3.eth.getAccounts()
+    console.log(accounts)
+
     let start = await tokenVesting.start()
     let cliff = await tokenVesting.cliff()
     let duration = await tokenVesting.duration()
@@ -87,22 +94,31 @@ class TokenVestingApp extends Component {
     })
   }
 
-  render() {
-    let { address } = this.props
-    let details = this.state
+  getWeb3() {
+    if (typeof window.web3 === 'undefined') {
+      return {}
+    } else {
+      let myWeb3 = new Web3(window.web3.currentProvider)
+      myWeb3.eth.defaultAccount = window.web3.eth.defaultAccount
 
+      return myWeb3
+    }
+  }
+
+  render() {
     return (
       <div className="TokenVestingApp">
         <header className="header">
-          <h3>Contract address: { this.contractLink(address) }</h3>
+          <img class="logo" src="/logo-zeppelin.png" />
+          <h3>Vesting address: { this.contractLink(this.props.address) }</h3>
         </header>
         <Grid>
           <Row>
             <Col xs={12} md={6}>
-              <VestingDetails details={ details } />
+              <VestingDetails details={ this.state } />
             </Col>
             <Col xs={12} md={6}>
-              <VestingChart details={ details } />
+              <VestingChart details={ this.state } />
             </Col>
           </Row>
         </Grid>
