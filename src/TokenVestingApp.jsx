@@ -6,10 +6,7 @@ import { Grid, Row, Col } from 'react-bootstrap'
 import './TokenVestingApp.css'
 
 // TODO abstract contract layer
-import Web3 from 'web3'
-import contract from 'truffle-contract'
-import vesting_artifacts from './TokenVesting.json'
-import token_artifacts from './SimpleToken.json'
+import { TokenVesting, SimpleToken } from './contracts'
 
 
 class TokenVestingApp extends Component {
@@ -33,26 +30,14 @@ class TokenVestingApp extends Component {
   }
 
   getTokenVesting(address) {
-    let { currentProvider } = this.state.web3
-    if (! currentProvider) return
-
-    let TokenVesting = contract(vesting_artifacts)
-    TokenVesting.setProvider(currentProvider)
-
     return TokenVesting.at(address)
   }
 
   getTokenContract(address) {
-    let { currentProvider } = this.state.web3
-    if (! currentProvider) return
-
-    let Token = contract(token_artifacts)
-    Token.setProvider(currentProvider)
-
-    return Token.at(address)
+    return SimpleToken.at(address)
   }
 
-  async componentDidMount() {
+  async getData() {
     let { address, token } = this.props
 
     let tokenVesting = this.getTokenVesting(address)
@@ -77,7 +62,6 @@ class TokenVestingApp extends Component {
     let name = await tokenContract.name()
 
     let owner = await tokenVesting.owner()
-    console.log(owner)
 
     let total = balance.plus(released)
     let end = start.plus(duration)
@@ -91,6 +75,7 @@ class TokenVestingApp extends Component {
       released: +released.toString(),
       vested: +vested.toString(),
       releasable: +vested.minus(released).toString(),
+      owner,
       revocable,
       revoked,
       name,
@@ -98,15 +83,8 @@ class TokenVestingApp extends Component {
     })
   }
 
-  getWeb3() {
-    if (typeof window.web3 === 'undefined') {
-      return {}
-    } else {
-      let myWeb3 = new Web3(window.web3.currentProvider)
-      myWeb3.eth.defaultAccount = window.web3.eth.defaultAccount
-
-      return myWeb3
-    }
+  componentDidMount() {
+    this.getData()
   }
 
   contractLink() {
@@ -125,10 +103,11 @@ class TokenVestingApp extends Component {
     let from = await this.getAccount()
 
     let tokenVesting = this.getTokenVesting(address)
-    await tokenVesting.release(token, { from })
     console.log("Release!")
+    let res = await tokenVesting.release(token, { from })
+    console.log("released!", res)
 
-    window.location.reload()
+    this.getData()
   }
 
   async onRevoke() {
@@ -137,14 +116,10 @@ class TokenVestingApp extends Component {
 
     let tokenVesting = this.getTokenVesting(address)
     console.log("Revoke!")
-    await tokenVesting.revoke(token, { from })
+    let res = await tokenVesting.revoke(token, { from })
+    console.log("revoked!", res)
 
-    window.location.reload()
-  }
-
-  async getAccount() {
-    let accounts = await this.state.web3.eth.getAccounts()
-    return accounts[0]
+    this.getData()
   }
 
   render() {
@@ -166,7 +141,7 @@ class TokenVestingApp extends Component {
         <Grid>
           <Row>
             <Col xs={12} md={6}>
-              <VestingDetails onRevoke={ () => this.onRevoke() } onRelease={ () => this.onRevoke() } details={ this.state } />
+              <VestingDetails onRevoke={ () => this.onRevoke() } onRelease={ () => this.onRelease() } details={ this.state } />
             </Col>
             <Col xs={12} md={6}>
               { ! this.state.revoked

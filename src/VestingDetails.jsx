@@ -8,22 +8,15 @@ class VestingDetails extends Component {
     return moment(milliseconds).format("dddd, MMMM Do YYYY, h:mm:ss a")
   }
 
-  releasable() {
-    let { releasable, symbol } = this.props.details
-
-    return releasable > 0
-      ? <span>{releasable} {symbol} <a onClick={ this.props.onRelease }>release</a> </span>
-      : `${releasable} ${symbol}`
-  }
-
-  revocable() {
-    return this.props.details.revocable
-      ? <span>✅ <a onClick={ this.props.onRevoke }>revoke</a> </span>
-      : "❌"
+  canRevoke() {
+    let { owner } = this.props.details
+    console.log(owner)
+    return true
   }
 
   render() {
-    let { start, end, cliff, total, released, vested, symbol } = this.props.details
+    let { start, end, cliff, total, released, releasable, vested, revocable, symbol } = this.props.details
+    let { onRevoke, onRelease } = this.props
 
     return <div className="details">
       <h4>Vesting details</h4>
@@ -51,7 +44,13 @@ class VestingDetails extends Component {
           </tr>
           <tr>
             <th>Releasable</th>
-            <td>{ this.releasable() }</td>
+            <td>
+              <Releasable
+                releasable = { releasable }
+                symbol     = { symbol }
+                onRelease  = { onRelease }
+              />
+            </td>
           </tr>
           <tr>
             <th>Total</th>
@@ -59,12 +58,33 @@ class VestingDetails extends Component {
           </tr>
           <tr>
             <th>Revocable</th>
-            <td>{ this.revocable() }</td>
+            <td>
+              <Revocable
+                revocable = { revocable }
+                onRevoke  = { onRevoke }
+                canRevoke = { this.canRevoke() }
+              />
+            </td>
           </tr>
         </tbody>
       </Table>
     </div>
   }
+}
+
+function Revocable({ revocable, onRevoke, canRevoke }) {
+  if (! revocable) return <Emoji e="❌" />
+  return <span><Emoji e="✅" /> { canRevoke ? <a onClick={ onRevoke }>revoke</a> : "" }</span>
+}
+
+
+function Releasable({ releasable, symbol, onRelease }) {
+  return <span>{releasable} {symbol} { releasable > 0 ? <a onClick={ onRelease }>release</a> : "" }</span>
+}
+
+
+function Emoji({ e }) {
+  return <span role="img">{ e }</span>
 }
 
 export default VestingDetails

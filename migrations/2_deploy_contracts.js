@@ -9,7 +9,7 @@ module.exports = function(deployer) {
   let cliff = 34145829 // ~1 yr
   let duration = 136583317 // ~4yrs
 
-  // MyVesting is TokenVesting(address _beneficiary, uint256 _start, uint256 _cliff, uint256 _duration, bool _revocable)
   deployer.deploy(SimpleToken, { from: testrpc });
+  // MyVesting is TokenVesting(address _beneficiary, uint256 _start, uint256 _cliff, uint256 _duration, bool _revocable)
   deployer.deploy(MyVesting, metamask, start, cliff, duration, true);
 };
