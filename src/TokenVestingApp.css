@@ -17,7 +17,7 @@
   position: relative;
   left: -27px;
   height: 50px;
-  padding-right: 14px;
+  padding-right: 12px;
   border-right: 1px solid #5cb6e4;
 }
 
@@ -39,4 +39,8 @@
 .contracts span {
   color: #333;
   font-size: 11px;
+}
+
+.details a {
+  cursor: pointer;
 }

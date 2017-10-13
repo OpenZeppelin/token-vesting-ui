@@ -46,7 +46,7 @@ class VestingChart extends Component {
         yAxes: [{
           scaleLabel: {
             display: true,
-            labelString: 'Amount'
+            labelString: this.props.details.symbol
           }
         }]
       },
@@ -84,4 +84,4 @@ class VestingChart extends Component {
   }
 }
 
-export default VestingChart;
+export default VestingChart

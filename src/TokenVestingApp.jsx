@@ -24,15 +24,12 @@ class TokenVestingApp extends Component {
       start: new Date() / 1000 - 1000000,
       cliff: new Date() / 1000 - 300000,
       end: new Date() / 1000 + 1000000,
-      vested: 5,
-      total: 10,
-      revocable: false
+      vested: null,
+      total: null,
+      revocable: false,
+      name: 'Token',
+      symbol: '---'
     }
-  }
-
-  contractLink(address) {
-    let href = `https://etherscan.io/address/${address}`
-    return <a href={ href } target="_blank">{ address }</a>
   }
 
   getTokenVesting(address) {
@@ -67,16 +64,20 @@ class TokenVestingApp extends Component {
       return
     }
 
-    let { accounts } = this.state.web3.eth
-    console.log(accounts)
-
     let start = await tokenVesting.start()
     let cliff = await tokenVesting.cliff()
     let duration = await tokenVesting.duration()
     let revocable = await tokenVesting.revocable()
+    let revoked = await tokenVesting.revoked(token)
     let vested = await tokenVesting.vestedAmount(token)
     let released = await tokenVesting.released(token)
     let balance = await tokenContract.balanceOf(address)
+
+    let symbol = await tokenContract.symbol()
+    let name = await tokenContract.name()
+
+    let owner = await tokenVesting.owner()
+    console.log(owner)
 
     let total = balance.plus(released)
     let end = start.plus(duration)
@@ -90,7 +91,10 @@ class TokenVestingApp extends Component {
       released: +released.toString(),
       vested: +vested.toString(),
       releasable: +vested.minus(released).toString(),
-      revocable: revocable
+      revocable,
+      revoked,
+      name,
+      symbol
     })
   }
 
@@ -105,18 +109,56 @@ class TokenVestingApp extends Component {
     }
   }
 
+  contractLink() {
+    let { address } = this.props
+    let href = `https://etherscan.io/address/${address}`
+    return <a href={ href } target="_blank">{ address }</a>
+  }
+
+  tokenLink() {
+    let href = `https://etherscan.io/token/${this.props.token}`
+    return <a href={ href } target="_blank">{ this.state.name }</a>
+  }
+
+  async onRelease() {
+    let { address, token } = this.props
+    let from = await this.getAccount()
+
+    let tokenVesting = this.getTokenVesting(address)
+    await tokenVesting.release(token, { from })
+    console.log("Release!")
+
+    window.location.reload()
+  }
+
+  async onRevoke() {
+    let { address, token } = this.props
+    let from = await this.getAccount()
+
+    let tokenVesting = this.getTokenVesting(address)
+    console.log("Revoke!")
+    await tokenVesting.revoke(token, { from })
+
+    window.location.reload()
+  }
+
+  async getAccount() {
+    let accounts = await this.state.web3.eth.getAccounts()
+    return accounts[0]
+  }
+
   render() {
     return (
       <div className="TokenVestingApp">
         <header className="header">
           <Grid>
             <Col xs={12}>
-              <a target="_blank" href="https://openzeppelin.org">
+              <a target="_blank" href="https://openzeppelin.org" rel="noopener noreferrer">
                 <img className="logo hidden-xs hidden-sm" src="/logo-zeppelin.png" alt="OpenZeppelin logo" />
               </a>
               <div className="contracts">
-                <h3>Vesting address: { this.contractLink(this.props.address) }</h3>
-                <span>For token address: { this.contractLink(this.props.token) }</span>
+                <h3>Vesting address: { this.contractLink() }</h3>
+                <span>For { this.tokenLink() } token</span>
               </div>
             </Col>
           </Grid>
@@ -124,10 +166,13 @@ class TokenVestingApp extends Component {
         <Grid>
           <Row>
             <Col xs={12} md={6}>
-              <VestingDetails details={ this.state } />
+              <VestingDetails onRevoke={ () => this.onRevoke() } onRelease={ () => this.onRevoke() } details={ this.state } />
             </Col>
             <Col xs={12} md={6}>
-              <VestingChart details={ this.state } />
+              { ! this.state.revoked
+                  ? <VestingChart details={ this.state } />
+                  : "Revoked"
+              }
             </Col>
           </Row>
         </Grid>

@@ -11,5 +11,5 @@ module.exports = function(deployer) {
 
   // MyVesting is TokenVesting(address _beneficiary, uint256 _start, uint256 _cliff, uint256 _duration, bool _revocable)
   deployer.deploy(SimpleToken, { from: testrpc });
-  deployer.deploy(MyVesting, metamask, start, cliff, duration, true, { from: metamask });
+  deployer.deploy(MyVesting, metamask, start, cliff, duration, true);
 };

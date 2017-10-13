@@ -8,10 +8,24 @@ class VestingDetails extends Component {
     return moment(milliseconds).format("dddd, MMMM Do YYYY, h:mm:ss a")
   }
 
-  render() {
-    let { start, end, cliff, total, released, releasable, vested, revocable } = this.props.details
+  releasable() {
+    let { releasable, symbol } = this.props.details
 
-    return <div>
+    return releasable > 0
+      ? <span>{releasable} {symbol} <a onClick={ this.props.onRelease }>release</a> </span>
+      : `${releasable} ${symbol}`
+  }
+
+  revocable() {
+    return this.props.details.revocable
+      ? <span>✅ <a onClick={ this.props.onRevoke }>revoke</a> </span>
+      : "❌"
+  }
+
+  render() {
+    let { start, end, cliff, total, released, vested, symbol } = this.props.details
+
+    return <div className="details">
       <h4>Vesting details</h4>
       <Table striped bordered condensed>
         <tbody>
@@ -29,23 +43,23 @@ class VestingDetails extends Component {
           </tr>
           <tr>
             <th>Already vested</th>
-            <td>{ vested }</td>
+            <td>{ vested } { symbol }</td>
           </tr>
           <tr>
             <th>Already released</th>
-            <td>{ released }</td>
+            <td>{ released } { symbol }</td>
           </tr>
           <tr>
             <th>Releasable</th>
-            <td>{ releasable }</td>
+            <td>{ this.releasable() }</td>
           </tr>
           <tr>
             <th>Total</th>
-            <td>{ total }</td>
+            <td>{ total } { symbol }</td>
           </tr>
           <tr>
             <th>Revocable</th>
-            <td>{ revocable ? "✅" : "❌" }</td>
+            <td>{ this.revocable() }</td>
           </tr>
         </tbody>
       </Table>
