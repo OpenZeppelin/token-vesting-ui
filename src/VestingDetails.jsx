@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import Emoji from './Emoji'
 import Network from './network'
+import { TokenVesting } from './contracts'
 
 
 class VestingDetails extends Component {
@@ -20,21 +21,8 @@ class VestingDetails extends Component {
     this.setState({ canRevoke: isOwner && ! revoked })
   }
 
-  formatDate(date) {
-    if (! date) return
-    const milliseconds = date * 1000
-    return moment(milliseconds).format("dddd, MMMM Do YYYY, h:mm:ss a")
-  }
-
-  formatTokens(amount) {
-    if (amount === undefined) return
-    return `${amount} ${this.props.details.symbol}`
-  }
-
   render() {
     const { start, cliff, end, total, released, releasable, vested, revocable } = this.props.details
-    const { onRevoke, onRelease } = this.props
-    const { canRevoke } = this.state
 
     return <div className="details">
       <h4>Vesting details</h4>
@@ -63,7 +51,7 @@ class VestingDetails extends Component {
           <tr>
             <th>Releasable</th>
             <td>
-              <Releasable releasable={ releasable } onRelease={ onRelease }>
+              <Releasable releasable={ releasable } onRelease={ () => this.onRelease() }>
                 { this.formatTokens(releasable) }
               </Releasable>
             </td>
@@ -75,12 +63,61 @@ class VestingDetails extends Component {
           <tr>
             <th>Revocable</th>
             <td>
-              <Revocable revocable={ revocable } canRevoke={ canRevoke } onRevoke={ onRevoke } />
+              <Revocable revocable={ revocable } canRevoke={ this.state.canRevoke } onRevoke={ () => this.onRevoke() } />
             </td>
           </tr>
         </tbody>
       </Table>
     </div>
+  }
+
+  formatDate(date) {
+    if (! date) return
+    const milliseconds = date * 1000
+    return moment(milliseconds).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  }
+
+  formatTokens(amount) {
+    if (amount === undefined) return
+    return `${amount} ${this.props.details.symbol}`
+  }
+
+  startLoader() {
+    this.props.setLoader(true)
+  }
+
+  stopLoader() {
+    this.props.setLoader(false)
+  }
+
+  getTokenVesting() {
+    return TokenVesting.at(this.props.address)
+  }
+
+  async onRelease() {
+    const tokenVesting = this.getTokenVesting()
+    const accounts = await Network.getAccounts()
+
+    try {
+      this.startLoader()
+      await tokenVesting.release(this.props.token, { from: accounts[0] })
+      this.props.getData()
+    } catch (e) {
+      this.setLoader()
+    }
+  }
+
+  async onRevoke() {
+    const tokenVesting = this.getTokenVesting()
+    const accounts = await Network.getAccounts()
+
+    try {
+      this.startLoader()
+      await tokenVesting.revoke(this.props.token, { from: accounts[0] })
+      this.props.getData()
+    } catch (e) {
+      this.stopLoader()
+    }
   }
 }
 
