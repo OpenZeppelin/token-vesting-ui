@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { Component } from 'react'
+import { Line } from 'react-chartjs-2'
 import moment from 'moment'
 
 class VestingChart extends Component {
   render() {
-    return <div>
-      <h4>Vesting schedule</h4>
-      <Line data={ this.chartData() } options={ this.chartOptions() } />
-    </div>
+    return <Line data={ this.chartData() } options={ this.chartOptions() } />
   }
 
   chartData() {
-    let { start, cliff, end, total, vested } = this.props.details
-    let now = new Date() / 1000 // normalize to seconds
+    const { start, cliff, end, total, vested } = this.props.details
+    const now = new Date() / 1000 // normalize to seconds
 
     return {
       datasets: [
@@ -54,8 +51,8 @@ class VestingChart extends Component {
   }
 
   getCliffAmount() {
-    let { total, start, cliff, end } = this.props.details
-    let slope = (cliff - start) / (end - start)
+    const { total, start, cliff, end } = this.props.details
+    const slope = (cliff - start) / (end - start)
 
     return total * slope
   }

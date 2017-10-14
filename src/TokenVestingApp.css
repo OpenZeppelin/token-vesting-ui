@@ -44,3 +44,26 @@
 .details a {
   cursor: pointer;
 }
+
+.revoked {
+  position: relative;
+}
+
+.revoked-message {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  margin-top: 50px;
+
+  font-size: 16px;
+  text-align: center;
+}
+
+.emoji {
+  vertical-align: middle;
+}
+
+.action {
+  position: absolute;
+  right: 30px;
+}

@@ -1,47 +1,34 @@
 import React, { Component } from 'react'
 import VestingDetails from './VestingDetails'
 import VestingChart from './VestingChart'
+import Emoji from './Emoji'
 
 import { Grid, Row, Col } from 'react-bootstrap'
 import './TokenVestingApp.css'
 
-// TODO abstract contract layer
+import Network from './network'
 import { TokenVesting, SimpleToken } from './contracts'
 
 
 class TokenVestingApp extends Component {
   constructor() {
     super()
-    this.state = this.initialState()
+    this.state = { name: 'Token', symbol: '' }
   }
 
-  initialState() {
-    return {
-      web3: this.getWeb3(),
-      start: new Date() / 1000 - 1000000,
-      cliff: new Date() / 1000 - 300000,
-      end: new Date() / 1000 + 1000000,
-      vested: null,
-      total: null,
-      revocable: false,
-      name: 'Token',
-      symbol: '---'
-    }
+  getTokenVesting() {
+    return TokenVesting.at(this.props.address)
   }
 
-  getTokenVesting(address) {
-    return TokenVesting.at(address)
-  }
-
-  getTokenContract(address) {
-    return SimpleToken.at(address)
+  getTokenContract() {
+    return SimpleToken.at(this.props.token)
   }
 
   async getData() {
-    let { address, token } = this.props
+    const { address, token } = this.props
 
-    let tokenVesting = this.getTokenVesting(address)
-    let tokenContract = this.getTokenContract(token)
+    const tokenVesting = await this.getTokenVesting()
+    const tokenContract = await this.getTokenContract()
 
     if (! tokenVesting || ! tokenContract) {
       // TODO reconnection strategy
@@ -49,22 +36,22 @@ class TokenVestingApp extends Component {
       return
     }
 
-    let start = await tokenVesting.start()
-    let cliff = await tokenVesting.cliff()
-    let duration = await tokenVesting.duration()
-    let revocable = await tokenVesting.revocable()
-    let revoked = await tokenVesting.revoked(token)
-    let vested = await tokenVesting.vestedAmount(token)
-    let released = await tokenVesting.released(token)
-    let balance = await tokenContract.balanceOf(address)
+    const start = await tokenVesting.start()
+    const cliff = await tokenVesting.cliff()
+    const duration = await tokenVesting.duration()
+    const revocable = await tokenVesting.revocable()
+    const revoked = await tokenVesting.revoked(token)
+    const vested = await tokenVesting.vestedAmount(token)
+    const released = await tokenVesting.released(token)
+    const balance = await tokenContract.balanceOf(address)
 
-    let symbol = await tokenContract.symbol()
-    let name = await tokenContract.name()
+    const symbol = await tokenContract.symbol()
+    const name = await tokenContract.name()
 
-    let owner = await tokenVesting.owner()
+    const owner = await tokenVesting.owner()
 
-    let total = balance.plus(released)
-    let end = start.plus(duration)
+    const total = balance.plus(released)
+    const end = start.plus(duration)
 
     this.setState({
       // TODO transform values properly
@@ -88,35 +75,31 @@ class TokenVestingApp extends Component {
   }
 
   contractLink() {
-    let { address } = this.props
-    let href = `https://etherscan.io/address/${address}`
+    const { address } = this.props
+    const href = `https://etherscan.io/address/${address}`
     return <a href={ href } target="_blank">{ address }</a>
   }
 
   tokenLink() {
-    let href = `https://etherscan.io/token/${this.props.token}`
+    const href = `https://etherscan.io/token/${this.props.token}`
     return <a href={ href } target="_blank">{ this.state.name }</a>
   }
 
   async onRelease() {
-    let { address, token } = this.props
-    let from = await this.getAccount()
+    const accounts = await Network.getAccounts()
+    const tokenVesting = this.getTokenVesting()
 
-    let tokenVesting = this.getTokenVesting(address)
-    console.log("Release!")
-    let res = await tokenVesting.release(token, { from })
+    const res = await tokenVesting.release(this.props.token, { from: accounts[0] })
     console.log("released!", res)
 
     this.getData()
   }
 
   async onRevoke() {
-    let { address, token } = this.props
-    let from = await this.getAccount()
+    const accounts = await Network.getAccount()
+    const tokenVesting = this.getTokenVesting()
 
-    let tokenVesting = this.getTokenVesting(address)
-    console.log("Revoke!")
-    let res = await tokenVesting.revoke(token, { from })
+    const res = await tokenVesting.revoke(this.props.token, { from: accounts[0] })
     console.log("revoked!", res)
 
     this.getData()
@@ -144,9 +127,10 @@ class TokenVestingApp extends Component {
               <VestingDetails onRevoke={ () => this.onRevoke() } onRelease={ () => this.onRelease() } details={ this.state } />
             </Col>
             <Col xs={12} md={6}>
+              <h4>Vesting schedule</h4>
               { ! this.state.revoked
                   ? <VestingChart details={ this.state } />
-                  : "Revoked"
+                  : <Revoked symbol={ this.state.symbol } />
               }
             </Col>
           </Row>
@@ -154,6 +138,16 @@ class TokenVestingApp extends Component {
       </div>
     )
   }
+}
+
+
+function Revoked({ symbol }) {
+  return <div className="revoked">
+    <span className="revoked-message">
+      <Emoji e="⚠️" /> Revoked
+    </span>
+    <VestingChart details={ { symbol } } />
+  </div>
 }
 
 export default TokenVestingApp
