@@ -28,44 +28,39 @@ class VestingDetails extends Component {
       <h4>Vesting details</h4>
       <Table striped bordered condensed>
         <tbody>
-          <tr>
-            <th>Start date</th>
-            <td>{ this.formatDate(start) }</td>
-          </tr>
-          <tr>
-            <th>Cliff</th>
-            <td>{ this.formatDate(cliff) }</td>
-          </tr>
-          <tr>
-            <th>End date</th>
-            <td>{ this.formatDate(end) }</td>
-          </tr>
-          <tr>
-            <th>Already vested</th>
-            <td>{ this.formatTokens(vested) }</td>
-          </tr>
-          <tr>
-            <th>Already released</th>
-            <td>{ this.formatTokens(released) }</td>
-          </tr>
-          <tr>
-            <th>Releasable</th>
-            <td>
-              <Releasable releasable={ releasable } onRelease={ () => this.onRelease() }>
-                { this.formatTokens(releasable) }
-              </Releasable>
-            </td>
-          </tr>
-          <tr>
-            <th>Total</th>
-            <td>{ this.formatTokens(total) }</td>
-          </tr>
-          <tr>
-            <th>Revocable</th>
-            <td>
-              <Revocable revocable={ revocable } canRevoke={ this.state.canRevoke } onRevoke={ () => this.onRevoke() } />
-            </td>
-          </tr>
+          <TableRow title="Start date">
+            { this.formatDate(start) }
+          </TableRow>
+          
+          <TableRow title="Clif">
+            { this.formatDate(cliff) }
+          </TableRow>
+          
+          <TableRow title="End date">
+            { this.formatDate(end) }
+          </TableRow>
+          
+          <TableRow title="Already vested">
+            { this.formatTokens(vested) }
+          </TableRow>
+          
+          <TableRow title="Already released">
+            { this.formatTokens(released) }
+          </TableRow>
+          
+          <TableRow title="Releasable">
+            <Releasable releasable={ releasable } onRelease={ () => this.onRelease() }>
+              { this.formatTokens(releasable) }
+            </Releasable>
+          </TableRow>
+          
+          <TableRow title="Total">
+            { this.formatTokens(total) }
+          </TableRow>
+
+          <TableRow title="Revocable">
+            <Revocable revocable={ revocable } canRevoke={ this.state.canRevoke } onRevoke={ () => this.onRevoke() } />
+          </TableRow>
         </tbody>
       </Table>
     </div>
@@ -120,6 +115,19 @@ class VestingDetails extends Component {
     }
   }
 }
+
+
+function TableRow({ title, children }) {
+  return (
+    <tr>
+      <th>{ title }</th>
+      <td>
+        { children }
+      </td>
+    </tr>
+  )
+}
+
 
 function Revocable({ revocable, onRevoke, canRevoke }) {
   if (! revocable) return <Emoji e="❌" />
