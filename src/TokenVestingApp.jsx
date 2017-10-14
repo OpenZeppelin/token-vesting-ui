@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import VestingDetails from './VestingDetails'
 import VestingChart from './VestingChart'
 import Emoji from './Emoji'
+import Spinner from './Spinner'
 
 import { Grid, Row, Col } from 'react-bootstrap'
 import './TokenVestingApp.css'
@@ -13,7 +14,7 @@ import { TokenVesting, SimpleToken } from './contracts'
 class TokenVestingApp extends Component {
   constructor() {
     super()
-    this.state = { name: 'Token', symbol: '' }
+    this.state = { name: 'Token', loading: true }
   }
 
   getTokenVesting() {
@@ -66,7 +67,8 @@ class TokenVestingApp extends Component {
       revocable,
       revoked,
       name,
-      symbol
+      symbol,
+      loading: false
     })
   }
 
@@ -89,25 +91,39 @@ class TokenVestingApp extends Component {
     const accounts = await Network.getAccounts()
     const tokenVesting = this.getTokenVesting()
 
-    const res = await tokenVesting.release(this.props.token, { from: accounts[0] })
-    console.log("released!", res)
+    this.toggleLoader()
 
-    this.getData()
+    try {
+      const res = await tokenVesting.release(this.props.token, { from: accounts[0] })
+      this.getData()
+    } catch (e) {
+      this.toggleLoader()
+    }
   }
 
   async onRevoke() {
-    const accounts = await Network.getAccount()
+    const accounts = await Network.getAccounts()
     const tokenVesting = this.getTokenVesting()
 
-    const res = await tokenVesting.revoke(this.props.token, { from: accounts[0] })
-    console.log("revoked!", res)
+    this.toggleLoader()
 
-    this.getData()
+    try {
+      const res = await tokenVesting.revoke(this.props.token, { from: accounts[0] })
+      this.getData()
+    } catch (e) {
+      this.toggleLoader()
+    }
+  }
+
+  toggleLoader() {
+    this.setState({ loading: ! this.state.loading })
   }
 
   render() {
     return (
       <div className="TokenVestingApp">
+        { this.state.loading ? <Spinner /> : null }
+
         <header className="header">
           <Grid>
             <Col xs={12}>
@@ -130,7 +146,7 @@ class TokenVestingApp extends Component {
               <h4>Vesting schedule</h4>
               { ! this.state.revoked
                   ? <VestingChart details={ this.state } />
-                  : <Revoked symbol={ this.state.symbol } />
+                  : <Revoked />
               }
             </Col>
           </Row>
@@ -141,12 +157,12 @@ class TokenVestingApp extends Component {
 }
 
 
-function Revoked({ symbol }) {
+function Revoked() {
   return <div className="revoked">
     <span className="revoked-message">
       <Emoji e="⚠️" /> Revoked
     </span>
-    <VestingChart details={ { symbol } } />
+    <VestingChart details={ {} } />
   </div>
 }
 

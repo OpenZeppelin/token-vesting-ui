@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 import moment from 'moment'
+
 import Emoji from './Emoji'
 import Network from './network'
+
 
 class VestingDetails extends Component {
   constructor() {
@@ -10,10 +12,10 @@ class VestingDetails extends Component {
     this.state = { canRevoke: false }
   }
 
-  async componentDidMount() {
-    const { owner, revoked } = this.props.details
+  async componentWillReceiveProps(nextProps) {
+    const { owner, revoked } = nextProps.details
     const accounts = await Network.getAccounts()
-    const isOwner = owner === accounts[0]
+    const isOwner = owner === accounts[0].toLowerCase()
 
     this.setState({ canRevoke: isOwner && ! revoked })
   }

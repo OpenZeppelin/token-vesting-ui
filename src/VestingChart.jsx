@@ -25,6 +25,17 @@ class VestingChart extends Component {
     }
   }
 
+  getCliffAmount() {
+    const { total, start, cliff, end } = this.props.details
+    const slope = (cliff - start) / (end - start)
+
+    return total * slope
+  }
+
+  formatDate(date) {
+    return moment(date * 1000).format('MM/DD/YYYY')
+  }
+
   chartOptions() {
     return {
       legend: { display: false },
@@ -43,18 +54,11 @@ class VestingChart extends Component {
         yAxes: [{
           scaleLabel: {
             display: true,
-            labelString: this.props.details.symbol
+            labelString: this.props.details.symbol || ''
           }
         }]
       },
     }
-  }
-
-  getCliffAmount() {
-    const { total, start, cliff, end } = this.props.details
-    const slope = (cliff - start) / (end - start)
-
-    return total * slope
   }
 
   fromBaseDataset(opts) {
@@ -74,10 +78,6 @@ class VestingChart extends Component {
       pointHitRadius: 10,
       ...opts
     }
-  }
-
-  formatDate(date) {
-    return moment(date * 1000).format('MM/DD/YYYY')
   }
 }
 
