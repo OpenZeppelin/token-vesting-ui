@@ -78,14 +78,13 @@ class TokenVestingApp extends Component {
     const end = start.plus(duration)
 
     this.setState({
-      // TODO transform values properly
-      start: +start.toString(),
-      end: +end.toString(),
-      cliff: +cliff.toString(),
-      total: +total.toString(),
-      released: +released.toString(),
-      vested: +vested.toString(),
-      releasable: +vested.minus(released).toString(),
+      start: start.toNumber(),
+      end: end.toNumber(),
+      cliff: cliff.toNumber(),
+      total: total.toNumber(),
+      released: released.toNumber(),
+      vested: vested.toNumber(),
+      releasable: vested.minus(released).toNumber(),
       owner,
       revocable,
       revoked,
