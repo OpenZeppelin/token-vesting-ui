@@ -2,24 +2,22 @@ import Web3 from 'web3'
 import { sleep } from './utils'
 
 const Network = {
-  web3() {
-    return new Promise((resolve, reject) => {
-      Network.provider().then(provider => resolve(new Web3(provider)))
-    })
+  async web3() {
+    const provider = await Network.provider()
+    return new Web3(provider)
   },
 
-  eth() {
-    return new Promise((resolve, reject) => {
-      Network.web3().then(web3 => resolve(web3.eth))
-    })
+  async eth() {
+    const web3 = await Network.web3()
+    return web3.eth
   },
 
   async provider() {
     let { web3 } = window
 
     while (web3 === undefined) {
-      Network._log("Waiting for web3")
-      await sleep(1000)
+      Network.log("Waiting for web3")
+      await sleep(500)
       web3 = window.web3
     }
 
@@ -39,7 +37,7 @@ const Network = {
     }
   },
 
-  _log(msg) {
+  log(msg) {
     console.log(`[Network] ${msg}`)
   }
 }
