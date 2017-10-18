@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
 
-import { TokenVesting, SimpleToken } from './contracts'
+import { getTokenVesting, getSimpleToken } from './contracts'
 
 import Header from './Header'
 import VestingDetails from './VestingDetails'
@@ -58,38 +58,31 @@ class TokenVestingApp extends Component {
   async getData() {
     const { address, token } = this.props
 
-    const tokenVesting = await TokenVesting.at(address)
-    const tokenContract = await SimpleToken.at(token)
+    const tokenVesting = await getTokenVesting(address)
+    const tokenContract = await getSimpleToken(token)
 
-    const owner     = await tokenVesting.owner()
-    const start     = await tokenVesting.start()
-    const cliff     = await tokenVesting.cliff()
-    const duration  = await tokenVesting.duration()
-    const revocable = await tokenVesting.revocable()
-    const revoked   = await tokenVesting.revoked(token)
-    const vested    = await tokenVesting.vestedAmount(token)
-    const released  = await tokenVesting.released(token)
-
-    const balance = await tokenContract.balanceOf(address)
-    const symbol  = await tokenContract.symbol()
-    const name    = await tokenContract.name()
-
-    const total = balance.plus(released)
+    const start = await tokenVesting.start()
+    const duration = await tokenVesting.duration()
     const end = start.plus(duration)
 
+    const balance  = await tokenContract.balanceOf(address)
+    const released = await tokenVesting.released(token)
+    const total = balance.plus(released)
+
     this.setState({
-      start: start.toNumber(),
-      end: end.toNumber(),
-      cliff: cliff.toNumber(),
-      total: total.toNumber(),
-      released: released.toNumber(),
-      vested: vested.toNumber(),
-      releasable: vested.minus(released).toNumber(),
-      owner,
-      revocable,
-      revoked,
-      name,
-      symbol,
+      start,
+      end,
+      cliff: await tokenVesting.cliff(),
+      total,
+      released,
+      vested: await tokenVesting.vestedAmount(token),
+      decimals: await tokenContract.decimals(),
+      beneficiary: await tokenVesting.beneficiary(),
+      owner: await tokenVesting.owner(),
+      revocable: await tokenVesting.revocable(),
+      revoked: await tokenVesting.revoked(token),
+      name: await tokenContract.name(),
+      symbol: await tokenContract.symbol(),
       loading: false
     })
   }

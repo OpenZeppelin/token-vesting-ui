@@ -4,7 +4,9 @@ import moment from 'moment'
 
 import Emoji from './Emoji'
 import Network from './network'
-import { TokenVesting } from './contracts'
+import { ContractLink } from './Links'
+import { getTokenVesting } from './contracts'
+import { displayAmount } from './utils'
 
 
 class VestingDetails extends Component {
@@ -18,26 +20,35 @@ class VestingDetails extends Component {
     const accounts = await Network.getAccounts()
     const isOwner = owner === accounts[0].toLowerCase()
 
-    this.setState({ canRevoke: isOwner && ! revoked })
+    this.setState({ accounts, canRevoke: isOwner && ! revoked })
   }
 
   render() {
-    const { start, cliff, end, total, released, releasable, vested, revocable } = this.props.details
+    const { start, cliff, end, total, released, vested, revocable, beneficiary } = this.props.details
+    const releasable = vested ? vested - released : null
 
     return <div className="details">
       <h4>Vesting details</h4>
       <Table striped bordered condensed>
         <tbody>
+          <TableRow title="Beneficiary">
+            <ContractLink address={ beneficiary } />
+          </TableRow>
+
           <TableRow title="Start date">
             { this.formatDate(start) }
           </TableRow>
           
-          <TableRow title="Clif">
+          <TableRow title="Cliff">
             { this.formatDate(cliff) }
           </TableRow>
           
           <TableRow title="End date">
             { this.formatDate(end) }
+          </TableRow>
+          
+          <TableRow title="Total vesting">
+            { this.formatTokens(total) }
           </TableRow>
           
           <TableRow title="Already vested">
@@ -52,10 +63,6 @@ class VestingDetails extends Component {
             <Releasable releasable={ releasable } onRelease={ () => this.onRelease() }>
               { this.formatTokens(releasable) }
             </Releasable>
-          </TableRow>
-          
-          <TableRow title="Total">
-            { this.formatTokens(total) }
           </TableRow>
 
           <TableRow title="Revocable">
@@ -73,8 +80,11 @@ class VestingDetails extends Component {
   }
 
   formatTokens(amount) {
-    if (amount === undefined) return
-    return `${amount} ${this.props.details.symbol}`
+    if (amount == null) return
+    const { decimals, symbol } = this.props.details
+    const display = displayAmount(amount, decimals)
+
+    return `${display} ${symbol}`
   }
 
   startLoader() {
@@ -85,17 +95,18 @@ class VestingDetails extends Component {
     this.props.setLoader(false)
   }
 
-  getTokenVesting() {
-    return TokenVesting.at(this.props.address)
+  async getTokenVesting() {
+    return getTokenVesting.at(this.props.address)
   }
 
   async onRelease() {
-    const tokenVesting = this.getTokenVesting()
-    const accounts = await Network.getAccounts()
+    const { token } = this.props
+    const { accounts } = this.state
+    const tokenVesting = await this.getTokenVesting()
 
     try {
       this.startLoader()
-      await tokenVesting.release(this.props.token, { from: accounts[0] })
+      await tokenVesting.release(token, { from: accounts[0] })
       this.props.getData()
     } catch (e) {
       this.setLoader()
@@ -103,12 +114,13 @@ class VestingDetails extends Component {
   }
 
   async onRevoke() {
-    const tokenVesting = this.getTokenVesting()
-    const accounts = await Network.getAccounts()
+    const { token } = this.props
+    const { accounts } = this.state
+    const tokenVesting = await this.getTokenVesting()
 
     try {
       this.startLoader()
-      await tokenVesting.revoke(this.props.token, { from: accounts[0] })
+      await tokenVesting.revoke(token, { from: accounts[0] })
       this.props.getData()
     } catch (e) {
       this.stopLoader()

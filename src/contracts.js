@@ -1,15 +1,16 @@
 import contract from 'truffle-contract'
 import Network from "./network"
 
-const provider = Network.provider()
+export async function getTokenVesting(address) {
+  const TokenVesting = contract(require('./contracts/TokenVesting.json'))
+  const provider = await Network.provider()
+  TokenVesting.setProvider(provider)
+  return TokenVesting.at(address)
+}
 
-const TokenVesting = contract(require('./contracts/TokenVesting.json'))
-TokenVesting.setProvider(provider)
-
-const SimpleToken = contract(require('./contracts/SimpleToken.json'))
-SimpleToken.setProvider(provider)
-
-export {
-  TokenVesting,
-  SimpleToken
+export async function getSimpleToken(address) {
+  const SimpleToken = contract(require('./contracts/SimpleToken.json'))
+  const provider = await Network.provider()
+  SimpleToken.setProvider(provider)
+  return SimpleToken.at(address)
 }

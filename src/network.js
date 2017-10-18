@@ -1,49 +1,46 @@
 import Web3 from 'web3'
+import { sleep } from './utils'
 
 const Network = {
   web3() {
-    return new Web3(this.provider())
+    return new Promise((resolve, reject) => {
+      Network.provider().then(provider => resolve(new Web3(provider)))
+    })
   },
 
   eth() {
-    return this.web3().eth
-  },
-
-  provider() {
-    let { web3 } = window
-    if (typeof web3 !== 'undefined') return web3.currentProvider
-    return new Web3.providers.HttpProvider("http://localhost:8545")
-  },
-
-  getCode(address) {
-    return new Promise(function (resolve, reject) {
-      Network.eth().getCode(address, Network._web3Callback(resolve, reject))
+    return new Promise((resolve, reject) => {
+      Network.web3().then(web3 => resolve(web3.eth))
     })
+  },
+
+  async provider() {
+    let { web3 } = window
+
+    while (web3 === undefined) {
+      Network._log("Waiting for web3")
+      await sleep(1000)
+      web3 = window.web3
+    }
+
+    return web3.currentProvider
   },
 
   getAccounts() {
-    return new Promise(function (resolve, reject) {
-      Network.eth().getAccounts(Network._web3Callback(resolve, reject))
-    })
-  },
-
-  getBalance(address) {
-    return new Promise(function (resolve, reject) {
-      Network.eth().getBalance(address, Network._web3Callback(resolve, reject))
-    })
-  },
-
-  getTransaction(txHash) {
-    return new Promise(function (resolve, reject) {
-      Network.eth().getTransaction(txHash, Network._web3Callback(resolve, reject))
+    return new Promise((resolve, reject) => {
+      Network.eth().then(eth => eth.getAccounts(Network._web3Callback(resolve, reject)))
     })
   },
 
   _web3Callback(resolve, reject) {
-    return function (error, value) {
-      if (error) reject(error);
-      else resolve(value);
+    return (error, value) => {
+      if (error) reject(error)
+      else resolve(value)
     }
+  },
+
+  _log(msg) {
+    console.log(`[Network] ${msg}`)
   }
 }
 

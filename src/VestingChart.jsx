@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import { Line } from 'react-chartjs-2'
 import moment from 'moment'
 
+import { displayAmount } from './utils'
+
 class VestingChart extends Component {
   render() {
     return <Line data={ this.chartData() } options={ this.chartOptions() } />
   }
 
   chartData() {
-    const { start, cliff, end, total, vested } = this.props.details
+    const { start, cliff, end, total, vested, decimals } = this.props.details
     const now = new Date() / 1000 // normalize to seconds
 
     return {
@@ -17,8 +19,8 @@ class VestingChart extends Component {
           data: [
             { x: this.formatDate(start), y: 0 },
             { x: this.formatDate(cliff), y: this.getCliffAmount() },
-            { x: this.formatDate(now), y: vested },
-            { x: this.formatDate(end), y: total },
+            { x: this.formatDate(now), y: displayAmount(vested, decimals) },
+            { x: this.formatDate(end), y: displayAmount(total, decimals) },
           ],
         }),
       ],
@@ -26,14 +28,14 @@ class VestingChart extends Component {
   }
 
   getCliffAmount() {
-    const { total, start, cliff, end } = this.props.details
+    const { total, start, cliff, end, decimals } = this.props.details
     const slope = (cliff - start) / (end - start)
 
-    return total * slope
+    return displayAmount(total, decimals) * slope
   }
 
   formatDate(date) {
-    return moment(date * 1000).format('MM/DD/YYYY')
+    return moment(date * 1000).format('MM/DD/YYYY HH:mm')
   }
 
   chartOptions() {
@@ -43,7 +45,7 @@ class VestingChart extends Component {
         xAxes: [ {
           type: "time",
           time: {
-            format: 'MM/DD/YYYY',
+            format: 'MM/DD/YYYY HH:mm',
             tooltipFormat: 'll HH:mm'
           },
           scaleLabel: {
