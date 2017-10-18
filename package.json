@@ -12,14 +12,18 @@
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
+    "require-symlink": "^0.2.0",
     "truffle-contract": "^1.1.11",
     "web3": "^1.0.0-beta.23",
     "zeppelin-solidity": "git+ssh://git@github.com/OpenZeppelin/zeppelin-solidity.git"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "require-link && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "requireSymlinks": {
+    "contracts": "./build/contracts"
   }
 }
