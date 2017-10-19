@@ -45,11 +45,11 @@
   cursor: pointer;
 }
 
-.revoked {
+.warning {
   position: relative;
 }
 
-.revoked-message {
+.warning-message {
   position: absolute;
   left: 0;
   width: 100%;
