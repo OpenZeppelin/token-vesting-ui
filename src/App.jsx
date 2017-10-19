@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import TokenVestingApp from './TokenVestingApp'
+import TokenVestingApp from './views/TokenVestingApp'
 import Web3 from 'web3'
 
 const App = () => (

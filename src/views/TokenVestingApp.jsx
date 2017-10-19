@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
 
-import { getTokenVesting, getSimpleToken } from './contracts'
+import { getTokenVesting, getSimpleToken } from '../contracts'
 
 import Header from './Header'
 import VestingDetails from './VestingDetails'
 import VestingSchedule from './VestingSchedule'
 import Spinner from './Spinner'
 
-import './TokenVestingApp.css'
+import '../stylesheets/TokenVestingApp.css'
 
 
 class TokenVestingApp extends Component {

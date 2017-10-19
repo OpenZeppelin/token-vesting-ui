@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Line } from 'react-chartjs-2'
 import moment from 'moment'
 
-import { displayAmount } from './utils'
+import { displayAmount } from '../utils'
 
 class VestingChart extends Component {
   render() {

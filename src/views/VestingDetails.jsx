@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 import moment from 'moment'
 
-import Emoji from './Emoji'
-import Network from './network'
+import { getTokenVesting } from '../contracts'
+import { displayAmount } from '../utils'
+import Network from '../network'
+
 import { ContractLink } from './Links'
-import { getTokenVesting } from './contracts'
-import { displayAmount } from './utils'
+import Emoji from './Emoji'
 
 
 class VestingDetails extends Component {
