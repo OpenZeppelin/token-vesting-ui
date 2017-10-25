@@ -1,29 +1,29 @@
-# truffle-init-webpack
-Example webpack project with Truffle. Includes contracts, migrations, tests, user interface and webpack build pipeline.
+[<img width="250" alt="OpenZeppelin Logo" src="https://openzeppelin.org/img/logo-zeppelin.png">](https://openzeppelin.com)
+
+# Token Vesting Dapp
+
+This is a web-based GUI to interact with the [Token Vesting contract](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/TokenVesting.sol) provided by the [OpenZeppelin](openzeppelin.com) [library](https://github.com/OpenZeppelin/zeppelin-solidity).
+
+![Token Vesting Dapp](https://github.com/OpenZeppelin/token-vesting-ui/blob/master/example.png)
 
 ## Usage
 
-To initialize a project with this example, run `truffle init webpack` inside an empty directory.
-
-## Building and the frontend
-
-1. First run `truffle compile`, then run `truffle migrate` to deploy the contracts onto your network of choice (default "development").
-1. Then run `npm run dev` to build the app and serve it on http://localhost:8080
-
-## Possible upgrades
-
-* Use the webpack hotloader to sense when contracts or javascript have been recompiled and rebuild the application. Contributions welcome!
-
-## Common Errors
-
-* **Error: Can't resolve '../build/contracts/MetaCoin.json'**
-
-This means you haven't compiled or migrated your contracts yet. Run `truffle compile` and `truffle migrate` first.
-
-Full error:
-
+### 1. Install the dependencies
 ```
-ERROR in ./app/main.js
-Module not found: Error: Can't resolve '../build/contracts/MetaCoin.json' in '/Users/tim/Documents/workspace/Consensys/test3/app'
- @ ./app/main.js 11:16-59
+npm install
 ```
+
+Also make sure you've got [Metamask](https://metamask.io/) installed and you're logged into it.
+
+### 2. Build the contracts
+```
+truffle compile
+```
+
+### 3. Start the web server
+```
+npm start
+```
+
+### 4. Ready!
+Go to `http://localhost:3000/<token-vesting-address>/<erc20-token-address>` and interact with the contract!

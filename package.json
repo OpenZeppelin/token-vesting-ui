@@ -17,7 +17,7 @@
     "truffle": "^3.4.11",
     "truffle-contract": "^1.1.11",
     "web3": "^1.0.0-beta.23",
-    "zeppelin-solidity": "git+https://git@github.com/OpenZeppelin/zeppelin-solidity.git"
+    "zeppelin-solidity": "git+https://git@github.com/OpenZeppelin/zeppelin-solidity.git#8e01dd14f9211239213ae7bd4c6af92dd18d4ab7"
   },
   "scripts": {
     "start": "require-link && react-scripts start",
