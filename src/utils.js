@@ -1,6 +1,6 @@
 export function displayAmount(amount, decimals) {
   amount = amount / (10 ** decimals)
-  return Math.round(amount * 100) / 100
+  return Math.round(amount * 10000) / 10000
 }
 
 export function sleep(ms) {

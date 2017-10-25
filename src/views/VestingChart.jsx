@@ -10,21 +10,31 @@ class VestingChart extends Component {
   }
 
   chartData() {
-    const { start, cliff, end, total, vested, decimals } = this.props.details
-    const now = new Date() / 1000 // normalize to seconds
-
     return {
       datasets: [
         this.fromBaseDataset({
-          data: [
-            { x: this.formatDate(start), y: 0 },
-            { x: this.formatDate(cliff), y: this.getCliffAmount() },
-            { x: this.formatDate(now), y: displayAmount(vested, decimals) },
-            { x: this.formatDate(end), y: displayAmount(total, decimals) },
-          ],
+          data: this.getPoints()
         }),
       ],
     }
+  }
+
+  getPoints() {
+    const { start, cliff, end, total, vested, decimals } = this.props.details
+    const now = new Date() / 1000 // normalize to seconds
+
+    const points = [
+      { x: this.formatDate(start), y: 0 },
+      { x: this.formatDate(cliff), y: this.getCliffAmount() }
+    ]
+
+    if (start < now && now < end) {
+      points.push({ x: this.formatDate(now), y: displayAmount(vested, decimals) })
+    }
+
+    points.push({ x: this.formatDate(end), y: displayAmount(total, decimals) })
+
+    return points
   }
 
   getCliffAmount() {

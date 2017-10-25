@@ -19,7 +19,10 @@ class VestingDetails extends Component {
   async componentWillReceiveProps(nextProps) {
     const { owner, revoked } = nextProps.details
     const accounts = await Network.getAccounts()
-    const isOwner = owner === accounts[0].toLowerCase()
+
+    const isOwner = accounts[0]
+      ? owner === accounts[0].toLowerCase()
+      : undefined
 
     this.setState({ accounts, canRevoke: isOwner && ! revoked })
   }
@@ -97,7 +100,7 @@ class VestingDetails extends Component {
   }
 
   async getTokenVesting() {
-    return getTokenVesting.at(this.props.address)
+    return getTokenVesting(this.props.address)
   }
 
   async onRelease() {
@@ -110,7 +113,7 @@ class VestingDetails extends Component {
       await tokenVesting.release(token, { from: accounts[0] })
       this.props.getData()
     } catch (e) {
-      this.setLoader()
+      this.stopLoader()
     }
   }
 

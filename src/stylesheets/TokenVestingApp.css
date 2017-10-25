@@ -81,3 +81,7 @@
 .emoji {
   vertical-align: middle;
 }
+
+th {
+  min-width: 155px;
+}
