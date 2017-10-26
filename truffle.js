@@ -9,10 +9,5 @@ module.exports = {
       port: 8545,
       network_id: '*' // Match any network id
     },
-    ropsten: {
-      host: 'ropsten.smartcontracts.xyz',
-      port: 8555,
-      network_id: "3",
-    }
   }
 }

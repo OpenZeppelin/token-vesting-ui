@@ -6,22 +6,47 @@ Web-based GUI to interact with the [Token Vesting contract](https://github.com/O
 
 ## Usage
 
-### 1. Install the dependencies
+### 1. Clone the repo
+```
+git clone git@github.com:OpenZeppelin/token-vesting-ui.git
+```
+
+### 2. Install the dependencies
 ```
 npm install
 ```
 
-Also make sure you've got [Metamask](https://metamask.io/) installed and you're logged into it.
+Also make sure you have [Metamask](https://metamask.io/) installed and youhave your account unlocked.
 
-### 2. Build the contracts
+### 3. Build the contracts with truffle
 ```
+npm i -g truffle
 truffle compile
 ```
 
-### 3. Start the web server
+### 4. Start the web server
 ```
 npm start
 ```
 
-### 4. Ready!
+### 5. Ready!
 Go to `http://localhost:3000/<token-vesting-address>/<erc20-token-address>` and interact with the contract!
+
+### 6. (optional) Deploy your own vesting contract
+If you don't have a vesting contract to try this out, deploy your own easily:
+
+```
+# Clone OpenZeppelin repo
+git clone git@github.com:OpenZeppelin/zeppelin-solidity.git
+cd zeppelin-solidity
+
+# Compile OpenZeppelin's contracts
+truffle compile
+
+# Connect to your node (check truffle-config.js to make sure you're connecting to the right host:port)
+truffle console --network=development
+
+# Deploy a new ERC20 token (or use your own)
+
+
+```
