@@ -1,8 +1,8 @@
-[<img width="250" alt="OpenZeppelin Logo" src="https://openzeppelin.org/img/logo-zeppelin.png">](https://openzeppelin.com)
+[<img width="225" alt="OpenZeppelin Logo" src="https://openzeppelin.org/img/logo-zeppelin.png">](https://openzeppelin.com)
 
 # Token Vesting Dapp
 
-This is a web-based GUI to interact with the [Token Vesting contract](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/TokenVesting.sol) provided by the [OpenZeppelin](openzeppelin.com) [library](https://github.com/OpenZeppelin/zeppelin-solidity).
+Web-based GUI to interact with the [Token Vesting contract](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/TokenVesting.sol) provided by the [OpenZeppelin](openzeppelin.com) [library](https://github.com/OpenZeppelin/zeppelin-solidity).
 
 ![Token Vesting Dapp](https://github.com/OpenZeppelin/token-vesting-ui/blob/master/example.png)
 
