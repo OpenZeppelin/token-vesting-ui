@@ -16,7 +16,7 @@ git clone git@github.com:OpenZeppelin/token-vesting-ui.git
 npm install
 ```
 
-Also make sure you have [Metamask](https://metamask.io/) installed and your account unlocked.
+Also make sure you have [Metamask](https://metamask.io/) installed, pointing to the right network and your account is unlocked.
 
 ### 3. Build the contracts with truffle
 ```
