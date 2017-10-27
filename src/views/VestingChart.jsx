@@ -20,32 +20,45 @@ class VestingChart extends Component {
   }
 
   getPoints() {
-    const { start, cliff, end, total, vested, decimals } = this.props.details
+    const { start, cliff, end } = this.props.details
     const now = new Date() / 1000 // normalize to seconds
 
-    const points = [
-      { x: this.formatDate(start), y: 0 },
-      { x: this.formatDate(cliff), y: this.getCliffAmount() }
-    ]
+    const points = [ this.getDataPointAt(start) ]
 
-    if (start < now && now < end) {
-      points.push({ x: this.formatDate(now), y: displayAmount(vested, decimals) })
+    // Add signitificant datapoints. Order matters.
+    if (cliff < now) {
+      points.push(this.getDataPointAt(cliff))
     }
 
-    points.push({ x: this.formatDate(end), y: displayAmount(total, decimals) })
+    if (start < now && now < end) {
+      points.push(this.getDataPointAt(now))
+    }
+
+    if (cliff > now) {
+      points.push(this.getDataPointAt(cliff))
+    }
+
+    points.push(this.getDataPointAt(end))
 
     return points
   }
 
-  getCliffAmount() {
-    const { total, start, cliff, end, decimals } = this.props.details
-    const slope = (cliff - start) / (end - start)
-
-    return displayAmount(total, decimals) * slope
+  getDataPointAt(date) {
+    return {
+      x: this.formatDate(date),
+      y: this.getAmountAt(date)
+    }
   }
 
   formatDate(date) {
     return moment(date * 1000).format('MM/DD/YYYY HH:mm')
+  }
+
+  getAmountAt(date) {
+    const { total, start, end, decimals } = this.props.details
+    const slope = (date - start) / (end - start)
+
+    return displayAmount(total, decimals) * slope
   }
 
   chartOptions() {
