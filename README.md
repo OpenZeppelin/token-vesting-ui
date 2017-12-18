@@ -20,9 +20,9 @@ Also make sure you have [Metamask](https://metamask.io/) installed, pointing to 
 
 ### 3. Build the contracts with truffle
 ```
-npm i -g truffle
-truffle compile
+npx truffle compile
 ```
+> Note: the `npx` command [comes with npm](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) as of npm@5.2.0 version.
 
 ### 4. Start the web server
 ```
@@ -34,13 +34,12 @@ If you don't have a vesting contract to try this out, deploy your own easily:
 
 #### i. Make sure you are connected to an ethereum node. You can use [testrpc](https://github.com/ethereumjs/testrpc) to simulate one:
 ```
-npm i -g ethereumjs-testrpc
-testrpc
+npx testrpc
 ```
 
 #### ii. Deploy the contracts:
 ```
-truffle migrate
+npx truffle migrate
 ```
 
 You should get a `TokenVesting` and a `SimpleToken` address:
