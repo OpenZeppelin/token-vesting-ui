@@ -4,6 +4,16 @@ Web-based GUI to interact with the [Token Vesting contract](https://github.com/s
 
 ![Token Vesting Dapp](./example.png)
 
+### Build
 
-### 6. Live!
+Builds distributable in "./build" directory
+
+`npm run build`
+
+### Deploy
+In the root folder
+
+`aws s3 cp build s3://<bucket-name> --recursive`
+
+### Live!
 Go to `http://vesting.singularitynet.io/<token-vesting-address>` and interact with the contract!
