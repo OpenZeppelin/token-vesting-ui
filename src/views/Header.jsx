@@ -8,7 +8,7 @@ function Header({ address, token, tokenName }) {
       <Grid>
         <Col xs={12}>
           <a target="_blank" href="https://openzeppelin.org" rel="noopener noreferrer">
-            <img className="logo hidden-xs hidden-sm" src="/logo-zeppelin.png" alt="OpenZeppelin logo" />
+            <img className="logo hidden-xs hidden-sm" src="/logo-singularity.png" alt="OpenZeppelin logo" />
           </a>
           <div className="contracts">
             <h3>Vesting address: <ContractLink address={ address } /></h3>

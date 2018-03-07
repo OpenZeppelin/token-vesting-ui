@@ -47,6 +47,7 @@ class TokenVestingApp extends Component {
             </Col>
           </Row>
         </Grid>
+        <p>Powered by <a href="https://github.com/OpenZeppelin/token-vesting-ui" target="_blank">OpenZeppelin</a></p>
       </div>
     )
   }
