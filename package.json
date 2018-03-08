@@ -21,12 +21,9 @@
     "zeppelin-solidity": "git+https://git@github.com/OpenZeppelin/zeppelin-solidity.git#8e01dd14f9211239213ae7bd4c6af92dd18d4ab7"
   },
   "scripts": {
-    "start": "require-link && react-scripts start",
-    "build": "require-link && react-scripts build",
-    "test": "require-link && react-scripts test --env=jsdom",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "requireSymlinks": {
-    "contracts": "./build/contracts"
   }
 }
