@@ -4,6 +4,10 @@ Web-based GUI to interact with the [Token Vesting contract](https://github.com/O
 
 ![Token Vesting Dapp](https://github.com/OpenZeppelin/token-vesting-ui/blob/master/example.png)
 
+## Prerequisites
+
+Node.js v8
+
 ## Usage
 
 ### 1. Clone the repo
